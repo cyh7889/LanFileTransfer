@@ -8,10 +8,10 @@ using QRCoder;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors();
 
-// 配置Kestrel最大请求体大小（200MB）
+// 配置Kestrel最大请求体大小（1GB）
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
-    serverOptions.Limits.MaxRequestBodySize = 200 * 1024 * 1024;
+    serverOptions.Limits.MaxRequestBodySize = 1024 * 1024 * 1024;
 });
 
 var app = builder.Build();
