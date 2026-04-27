@@ -2,10 +2,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using Microsoft.AspNetCore.Http;
 using QRCoder;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors();
+
+// 配置Kestrel最大请求体大小（200MB）
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.Limits.MaxRequestBodySize = 200 * 1024 * 1024;
+});
+
 var app = builder.Build();
 app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
