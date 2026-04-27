@@ -84,6 +84,15 @@ app.MapDelete("/delete/{name}", (string name) =>
 
 app.Run("http://0.0.0.0:8080");
 
+Console.WriteLine("\n========================================");
+Console.WriteLine("  局域网文件传输服务已启动");
+Console.WriteLine("========================================");
+var ip = GetLocalIPAddress();
+Console.WriteLine($"  访问地址: http://{ip}:8080");
+Console.WriteLine($"  中文版:  http://{ip}:8080/?lang=zh");
+Console.WriteLine($"  English: http://{ip}:8080/?lang=en");
+Console.WriteLine("========================================\n");
+
 static string GetLocalIPAddress()
 {
     try
