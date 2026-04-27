@@ -84,14 +84,10 @@ app.MapDelete("/delete/{name}", (string name) =>
 
 app.Run("http://0.0.0.0:8080");
 
-Console.WriteLine("\n========================================");
-Console.WriteLine("  局域网文件传输服务已启动");
-Console.WriteLine("========================================");
 var ip = GetLocalIPAddress();
-Console.WriteLine($"  访问地址: http://{ip}:8080");
-Console.WriteLine($"  中文版:  http://{ip}:8080/?lang=zh");
-Console.WriteLine($"  English: http://{ip}:8080/?lang=en");
-Console.WriteLine("========================================\n");
+var msg = $"\n========================================\n  局域网文件传输服务已启动\n========================================\n  访问地址: http://{ip}:8080\n  中文版:  http://{ip}:8080/?lang=zh\n  English: http://{ip}:8080/?lang=en\n========================================\n";
+Console.WriteLine(msg);
+File.WriteAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "LanFileTransfer_IP.txt"), msg);
 
 static string GetLocalIPAddress()
 {
