@@ -96,14 +96,42 @@ static string GetLocalIPAddress()
         using var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0);
         socket.Connect("8.8.8.8", 65530);
         var endPoint = socket.LocalEndPoint as IPEndPoint;
-        return endPoint?.Address.ToString() ?? "127.0.0.1";
+        var ip = endPoint?.Address?.ToString();
+        if (!string.IsNullOrEmpty(ip) && ip != "0.0.0.0")
+            return ip;
     }
-    catch
+    catch { }
+    
+    try
     {
         var host = Dns.GetHostAddresses(Dns.GetHostName())
             .FirstOrDefault(a => a.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
-        return host?.ToString() ?? "127.0.0.1";
+        if (host != null && host.ToString() != "127.0.0.1")
+            return host.ToString();
     }
+    catch { }
+    
+    try
+    {
+        foreach (var ni in System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces())
+        {
+            if (ni.OperationalStatus != System.Net.NetworkInformation.OperationalStatus.Up)
+                continue;
+            if (ni.NetworkInterfaceType == System.Net.NetworkInformation.NetworkInterfaceType.Loopback)
+                continue;
+            
+            var props = ni.GetIPProperties();
+            foreach (var addr in props.UnicastAddresses)
+            {
+                var ip = addr.Address.ToString();
+                if (ip.StartsWith("192.168.") || ip.StartsWith("10.") || ip.StartsWith("172."))
+                    return ip;
+            }
+        }
+    }
+    catch { }
+    
+    return "127.0.0.1";
 }
 
 static string FormatFileSize(long bytes)
